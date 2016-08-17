@@ -33,11 +33,11 @@ class UrlResource {
 
     /**
      * @public
-     * @param {Object} data
+     * @param {Object} params
      * @returns {Promise}
      */
-    load(data) {
-        return this._api.get(this._url, data).then((response) => this._processResponse(response));
+    load(params) {
+        return this._api.get(this._url, { params }).then((response) => this._processResponse(response));
     }
 
     /**
