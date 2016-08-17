@@ -85,7 +85,11 @@ class Transfers extends Component {
         }
 
         if (this.props.transfersLoadError) {
-            return (<Error error="{this.props.transfersLoadError}" />);
+            return (
+                <Error error={this.props.transfersLoadError}>
+                    Загрузка операций
+                </Error>
+            );
         }
 
         return (
@@ -96,9 +100,36 @@ class Transfers extends Component {
     /**
      * @public
      */
+    renderTotalAmount() {
+        if (this.props.isTransfersStatisticLoading) {
+            return (
+                <p className="text-center">Загрузка состояния счета...</p>
+            );
+        }
+        if (this.props.transfersStatisticLoadError) {
+            return (
+                <Error error={this.props.transfersStatisticLoadError}>
+                    Загрузка стастистики
+                </Error>
+            );
+        }
+        return (
+            <div className="alert alert-info text-center">
+                Итог по операциям: {this.props.transfersStatistic.currentAmount}
+            </div>
+        );
+    }
+
+    /**
+     * @public
+     */
     renderCreateTransferError() {
         if (!this.props.isTransferLoading && this.props.transferCreateError) {
-            return (<Error error="{this.props.transferCreateError}" />);
+            return (
+                <Error error={this.props.transferCreateError}>
+                    Создание операции
+                </Error>
+            );
         }
     }
 
