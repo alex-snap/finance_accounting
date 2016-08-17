@@ -21,7 +21,7 @@ class UrlResourceFactory {
      */
     createResource(params = {}) {
         const route = this._resolveRoute(params);
-        return new UrlResource(this.axiosInstance, this.route);
+        return new UrlResource(this.axiosInstance, route);
     }
 
     /**
