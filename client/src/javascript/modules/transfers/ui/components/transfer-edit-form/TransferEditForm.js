@@ -62,10 +62,10 @@ class TransferEditForm extends Component {
      */
     @autobind
     resetForm() {
-        this.refs.type.value = undefined;
-        this.refs.description.value = undefined;
-        this.refs.contractor.value = undefined;
-        this.refs.amount.value = undefined;
+        this.refs.type.value = '';
+        this.refs.description.value = '';
+        this.refs.contractor.value = '';
+        this.refs.amount.value = '';
     }
 
     /**
@@ -73,7 +73,7 @@ class TransferEditForm extends Component {
      */
     render() {
         const transferTypeOptions = [
-            { key: 0, value: undefined, label: 'Тип операции' },
+            { key: 0, value: '', label: 'Тип операции' },
             { key: 1, value: transferTypeEnum.Add, label: 'Приход' },
             { key: 2, value: transferTypeEnum.Cost, label: 'Расход' }
         ];
