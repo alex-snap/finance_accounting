@@ -41,7 +41,7 @@ class TransferEditForm extends Component {
     }
 
     /**
-     * todo доделать
+     * todo validation
      * @private
      * @returns {boolean}
      */
@@ -50,7 +50,7 @@ class TransferEditForm extends Component {
     }
 
     /**
-     * todo доделать
+     * todo show errors
      * @private
      */
     showErrors() {

@@ -13,5 +13,4 @@ module.exports = app => {
      * register routes
      */
     require('./transfers/routes')(app);
-    require('./account/routes')(app);
 };

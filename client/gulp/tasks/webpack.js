@@ -20,9 +20,10 @@ gulp.task('webpack:dev', function (callback) {
 });
 
 /**
+ * todo build
  * Build
  */
-gulp.task('webpack:build', function (callback) {
-  webpack(config.webpackProdConfig);
-  callback();
-});
+//gulp.task('webpack:build', function (callback) {
+//  webpack(config.webpackProdConfig);
+//  callback();
+//});
