@@ -37,7 +37,8 @@ class Transfers extends Component {
      * @inheritDoc
      */
     componentDidMount() {
-        actions.loadTransfers(this.props.dispatch, this.props.location.query);
+        actions.loadTransfers(this.props.dispatch);
+        actions.loadTransfersStatistic(this.props.dispatch);
     }
 
     /**
@@ -55,23 +56,33 @@ class Transfers extends Component {
                     </div>
 
                     <div className="row">
-                        <div className="alert alert-info text-center">
-                            Итог по операциям: {this.props.account.amountTotal}
-                        </div>}
+                        {this.renderTotalAmount()}
                     </div>
 
                     <div className="row">
-                        <TransferEditForm
-                            onSubmit={this.createTransfer}
-                            isTransferCreating={this.props.isTransferCreating}
-                            ref="transferEditForm"
-                        />
+                        {this.renderTransferCreateForm()}
                     </div>
 
                     {this.renderCreateTransferError()}
                 </div>
             </div>
         );
+    }
+
+    /**
+     * @public
+     */
+    renderTransferCreateForm() {
+        const showForm = this.props.isTransfersLoadSuccess && this.props.isTransfersStatisticLoadSuccess;
+        if (showForm) {
+            return (
+                <TransferEditForm
+                    onSubmit={this.createTransfer}
+                    isTransferCreating={this.props.isTransferCreating}
+                    ref="transferEditForm"
+                />
+            );
+        }
     }
 
     /**
@@ -137,24 +148,37 @@ class Transfers extends Component {
 
 Transfers.propTypes = {
     dispatch: PropTypes.func.isRequired,
+
     transfers: PropTypes.array,
     isTransfersLoading: PropTypes.bool.isRequired,
+    isTransfersLoadSuccess: PropTypes.bool.isRequired,
     transfersLoadError: PropTypes.object,
 
     isTransferCreating: PropTypes.bool.isRequired,
+    isTransferCreateSuccess: PropTypes.bool.isRequired,
     transferCreateError: PropTypes.object,
-    isTransferCreateSuccess: PropTypes.bool.isRequired
+
+    transfersStatistic: PropTypes.object,
+    isTransfersStatisticLoading: PropTypes.bool.isRequired,
+    isTransfersStatisticLoadSuccess: PropTypes.bool.isRequired,
+    transfersStatisticLoadError: PropTypes.object
 };
 
 const mapStateToProps = function ({ transfers }) {
     return {
         transfers: transfers.transfers,
         isTransfersLoading: transfers.isTransfersLoading,
+        isTransfersLoadSuccess: transfers.isTransfersLoadSuccess,
         transfersLoadError: transfers.transfersLoadError,
 
         isTransferCreating: transfers.isTransferCreating,
         transferCreateError: transfers.transferCreateError,
-        isTransferCreateSuccess: transfers.isTransferCreateSuccess
+        isTransferCreateSuccess: transfers.isTransferCreateSuccess,
+
+        transfersStatistic: transfers.transfersStatistic,
+        isTransfersStatisticLoading: transfers.isTransfersStatisticLoading,
+        isTransfersStatisticLoadSuccess: transfers.isTransfersStatisticLoadSuccess,
+        transfersStatisticLoadError: transfers.transfersStatisticLoadError
     };
 };
 

@@ -34,3 +34,19 @@ export function loadTransfers(dispatch, loadParams) {
             dispatch({ type: ActionsTypes.LOAD_TRANSFERS.FAILED, data: error });
         });
 }
+
+/**
+ * @public
+ * @param {Function} dispatch
+ */
+export function loadTransfersStatistic(dispatch) {
+    dispatch({ type: ActionsTypes.LOAD_TRANSFERS_STATISTIC.REQUEST });
+
+    api.loadTransfersStatistic()
+        .then((statistic) => {
+            dispatch({ type: ActionsTypes.LOAD_TRANSFERS_STATISTIC.SUCCESS, data: statistic });
+        })
+        .catch((error) => {
+            dispatch({ type: ActionsTypes.LOAD_TRANSFERS_STATISTIC.FAILED, data: error });
+        });
+}

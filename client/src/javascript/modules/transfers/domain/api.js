@@ -1,6 +1,6 @@
 import errorFactory from 'infrastructure/factories/errorFactory';
 import transferUrlResourceFactory from './transferUrlResourceFactory';
-import accountUrlResourceFactory from './accountUrlResourceFactory';
+import transferStatisticUrlResourceFactory from './transferStatisticUrlResourceFactory';
 
 const transferUrlResource = transferUrlResourceFactory.createResource();
 
@@ -11,7 +11,10 @@ const transferUrlResource = transferUrlResourceFactory.createResource();
  */
 export function createTransfer(data) {
     return transferUrlResource.create(data)
-        .catch((res) => errorFactory.createError(res));
+        .catch((res) => {
+            const error = errorFactory.createError(res);
+            return Promise.reject(error);
+        });
 }
 
 /**
@@ -20,17 +23,24 @@ export function createTransfer(data) {
  * @returns {Promise.<Array>}
  */
 export function loadTransfers(loadParams) {
+    console.log(loadParams);
     return transferUrlResource.load(loadParams)
-        .catch((res) => errorFactory.createError(res));
+        .catch((res) => {
+            const error = errorFactory.createError(res);
+            return Promise.reject(error);
+        });
 }
 
-const accountUrlResource = accountUrlResourceFactory.createResource();
+const transferStatisticUrlResource = transferStatisticUrlResourceFactory.createResource();
 
 /**
  * @public
  * @returns {Promise}
  */
-export function loadAccount() {
-    return accountUrlResource.load()
-        .catch((res) => errorFactory.createError(res));
+export function loadTransfersStatistic() {
+    return transferStatisticUrlResource.load()
+        .catch((res) => {
+            const error = errorFactory.createError(res);
+            return Promise.reject(error);
+        });
 }

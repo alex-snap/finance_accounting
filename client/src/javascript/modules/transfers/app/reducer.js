@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as ActionTypes from './actionTypes';
 import { objectAssign, addToArray } from 'helpers/immutable';
+import transferTypeEnum from '../domain/transferTypeEnum';
 
 const initialState = {
     transfers: [],
@@ -10,7 +11,13 @@ const initialState = {
     transferCreateError: undefined,
 
     isTransfersLoading: false,
-    transfersLoadError: undefined
+    isTransfersLoadSuccess: false,
+    transfersLoadError: undefined,
+
+    transfersStatistic: {},
+    isTransfersStatisticLoading: false,
+    isTransfersStatisticLoadSuccess: false,
+    transfersStatisticLoadError: undefined
 };
 
 
@@ -25,6 +32,30 @@ function isActionsContainsType(actionType, actionsNamespace) {
     const predicate = (type) => actionType === type;
     return _.some(_.values(actionsNamespace), predicate);
 }
+
+/**
+ * Update transfer statistic state after create new transfer
+ * @private
+ * @param {Object} prevStatistic
+ * @param {Object} createdTransfer
+ * @returns {Object}
+ */
+const updateTransfersStatistic = function (prevStatistic, createdTransfer) {
+    let updatedAmount;
+
+    switch (createdTransfer.type) {
+        case transferTypeEnum.Add:
+            updatedAmount = prevStatistic.currentAmount + createdTransfer.amount;
+            break;
+        case transferTypeEnum.Cost:
+            updatedAmount = prevStatistic.currentAmount - createdTransfer.amount;
+            break;
+    }
+
+    return objectAssign(prevStatistic, {
+        currentAmount: updatedAmount
+    });
+};
 
 /**
  * Load transfer actions handler
@@ -46,13 +77,13 @@ const createTransfersHandler = function (state, action) {
             return objectAssign(state, {
                 transfers: addToArray(state.transfers, action.data),
                 isTransferCreating: false,
-                isTransferCreateSuccess: true
+                isTransferCreateSuccess: true,
+                transfersStatistic: updateTransfersStatistic(state.transfersStatistic, action.data)
             });
             break;
         case (ActionTypes.CREATE_TRANSFER.FAILED):
             return objectAssign(state, {
                 isTransfersLoading: false,
-                isTransferCreateFailed: true,
                 transferCreateError: action.data
             });
             break;
@@ -71,24 +102,56 @@ const loadTransfersHandler = function (state, action) {
         case (ActionTypes.LOAD_TRANSFERS.REQUEST):
             return objectAssign(state, {
                 isTransfersLoading: true,
+                isTransfersLoadSuccess: false,
                 transfersLoadError: undefined
             });
             break;
         case (ActionTypes.LOAD_TRANSFERS.SUCCESS):
             return objectAssign(state, {
                 transfers: action.data,
-                isTransfersLoading: false
+                isTransfersLoading: false,
+                isTransfersLoadSuccess: true
             });
             break;
         case (ActionTypes.LOAD_TRANSFERS.FAILED):
             return objectAssign(state, {
                 isTransfersLoading: false,
-                isTransfersLoadFailed: true,
                 transfersLoadError: action.data
             });
             break;
         default:
             return objectAssign(state);
+            break;
+    }
+};
+
+/**
+ * Load transfer statistic actions handler
+ * @private
+ * @param state
+ * @param action
+ */
+const loadTransfersStatisticHandler = function (state, action) {
+    switch (action.type) {
+        case (ActionTypes.LOAD_TRANSFERS_STATISTIC.REQUEST):
+            return objectAssign(state, {
+                isTransfersStatisticLoading: true,
+                isTransfersStatisticLoadSuccess: false,
+                transfersStatisticLoadError: undefined
+            });
+            break;
+        case (ActionTypes.LOAD_TRANSFERS_STATISTIC.SUCCESS):
+            return objectAssign(state, {
+                transfersStatistic: action.data,
+                isTransfersStatisticLoading: false,
+                isTransfersStatisticLoadSuccess: true
+            });
+            break;
+        case (ActionTypes.LOAD_TRANSFERS_STATISTIC.FAILED):
+            return objectAssign(state, {
+                isTransfersStatisticLoading: false,
+                transfersStatisticLoadError: action.data
+            });
             break;
     }
 };
@@ -105,6 +168,9 @@ export default function transfers(state = initialState, action = {}) {
     }
     if (isActionsContainsType(action.type, ActionTypes.CREATE_TRANSFER)) {
         return createTransfersHandler(state, action);
+    }
+    if (isActionsContainsType(action.type, ActionTypes.LOAD_TRANSFERS_STATISTIC)) {
+        return loadTransfersStatisticHandler(state, action);
     }
 
     return objectAssign(state);
